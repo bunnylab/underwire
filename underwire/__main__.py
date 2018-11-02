@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QTextEdit, QMessageBox, QStackedWidget, QHBoxLayout,
 from PyQt5 import QtGui
 
 from message import Message
+from platforms.facebook import FBChatClient
 
 # shift to messaging menu should have
 class ChatWidget(QWidget):
@@ -28,7 +29,7 @@ class ChatWidget(QWidget):
     def keyPressEvent(self, event):
          if type(event) == QtGui.QKeyEvent:
              #here accept the event and do something
-             print event.key()
+             print(event.key())
              Message.sendMessage(self.chatInput.text())
              self.chatHistory.insertPlainText(self.chatInput.text() + '\n')
              self.chatHistory.moveCursor(QtGui.QTextCursor.End)
@@ -88,6 +89,7 @@ class MainWindow(QMainWindow):
         exitAct.triggered.connect(app.quit)
         # menubar
         menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)  # lets it display on mac
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(exitAct)
 
@@ -108,9 +110,6 @@ class MainWindow(QMainWindow):
     def initChatWidget(self):
         self.chatwidget = ChatWidget(self)
         self.setCentralWidget(self.chatwidget)
-
-
-
 
 if __name__ == '__main__':
 
