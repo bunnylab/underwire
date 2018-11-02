@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.platformselectwidget = PlatformSelectWidget(self)
         self.setCentralWidget(self.platformselectwidget)
         self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget)
-        self.platformselectwidget.echoButton.clicked.connect(lambda: self.initChatWidget(platform='Echo Test'))
+        self.platformselectwidget.echoButton.clicked.connect(lambda: self.initChatWidget(platform='echo'))
 
     def initLoginWidget(self, **kwargs):
         self.loginwidget = LoginWidget(self, **kwargs)
