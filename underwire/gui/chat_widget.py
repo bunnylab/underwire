@@ -13,7 +13,8 @@ class ChatWidget(QWidget):
             print('setting echo chat clinent')
             # this is pretty clever pass in the gui callback to whichever library
             # callback we need to use for message receipt gj me
-            self.chatclient = EchoChatClient(msgReceivedCallback=self.messageReceived)
+            self.chatclient = EchoChatClient(msgReceivedCallback=self.messageReceived,
+                cipherType='fernet', cipherPass='awiuerfhaiufhnglasidufgasdf')
         self.setStatusTip(platform)
         self.initUI()
 
