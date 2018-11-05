@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QTextEdit
 from PyQt5 import QtGui
 from platforms.echo import EchoChatClient, Message
+from platforms.facebook import FBChatClient, Message
 
 # shift to messaging menu should have
 class ChatWidget(QWidget):
@@ -9,12 +10,19 @@ class ChatWidget(QWidget):
         super(ChatWidget, self).__init__(parent)
         self.platform = platform
         print(self.platform)
+
         if platform == 'echo':
-            print('setting echo chat clinent')
+            print('setting echo chat client')
             # this is pretty clever pass in the gui callback to whichever library
             # callback we need to use for message receipt gj me
             self.chatclient = EchoChatClient(msgReceivedCallback=self.messageReceived,
                 cipherType='fernet', cipherPass='awiuerfhaiufhnglasidufgasdf')
+        if platform == 'facebook':
+            print('setting fb chat client')
+            self.chatclient = FBChatClient(msgReceivedCallback=self.messageReceived,
+                cipherType='fernet', cipherPass='awiuerfhaiufhnglasidufgasdf',
+                email='theunvarnished42@gmail.com', password='panda667')
+
         self.setStatusTip(platform)
         self.initUI()
 
