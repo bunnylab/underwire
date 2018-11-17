@@ -7,13 +7,24 @@ from gui.chat_widget import ChatWidget
 from gui.login_widget import LoginWidget
 from gui.platformselect_widget import PlatformSelectWidget
 from platforms.facebook import FBChatClient
-
+from config import storedConfiguration
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, config=storedConfiguration()):
         super(MainWindow, self).__init__(parent)
         self.initUI()
+
+    def loginButtonClicked(self, platform):
+        print('you clicked the login button')
+        if platform == 'facebook':
+            self.initChatWidget(platform=platform,
+                email=self.loginwidget.emailEdit.text(),
+                password=self.loginwidget.passwordEdit.text())
+        elif platform == 'discord':
+            self.initChatWidget(platform=platform)
+        else:
+            self.statusBar().showMessage('Login Failed')
 
 
     def initUI(self):
@@ -44,13 +55,14 @@ class MainWindow(QMainWindow):
     def initPlatformSelectWidget(self):
         self.platformselectwidget = PlatformSelectWidget(self)
         self.setCentralWidget(self.platformselectwidget)
-        self.platformselectwidget.fbButton.clicked.connect(lambda: self.initChatWidget(platform='facebook'))
+        self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget(platform='facebook')) # change to login widget
         self.platformselectwidget.echoButton.clicked.connect(lambda: self.initChatWidget(platform='echo'))
+        self.platformselectwidget.discordButton.clicked.connect(lambda: self.initLoginWidget(platform='discord'))
 
     def initLoginWidget(self, **kwargs):
         self.loginwidget = LoginWidget(self, **kwargs)
         self.setCentralWidget(self.loginwidget)
-        self.loginwidget.connectButton.clicked.connect(self.initChatWidget)
+        self.loginwidget.connectButton.clicked.connect(lambda: self.loginButtonClicked(platform=self.loginwidget.platform))
 
     def initChatWidget(self, **kwargs):
         self.chatwidget = ChatWidget(self, **kwargs)

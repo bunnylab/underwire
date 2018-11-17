@@ -13,7 +13,7 @@ class PlatformSelectWidget(QWidget):
         self.fbLabel = QLabel('Facebook Chat')
         self.echoLabel = QLabel('Echo Test')
         self.twitterLabel = QLabel('Twitter DM (not supported)')
-        self.discordLabel = QLabel('Discord Chat (not supported)')
+        self.discordLabel = QLabel('Discord Chat')
 
         self.fbButton = QPushButton('Connect', self)
         self.echoButton = QPushButton('Connect', self)

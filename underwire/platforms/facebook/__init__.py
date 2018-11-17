@@ -1,6 +1,8 @@
 from fbchat import Client, Message
 from ciphers.fernet import FernetCrypt
+from PyQt5.QtCore import QThread
 from fbchat.models import *
+import time
 
 class LocalMessage:
     def __init__(self, ciphertext, sender, recipient):
@@ -11,14 +13,29 @@ class LocalMessage:
 # custom client for fbchat to allow us to access the event callbacks
 class CustomClient(Client):
 
-    def setMessageCallback(onReceive):
+    def setMessageCallback(self, onReceive):
         self.onReceive = onReceive
 
     def onMessage(self, message_object, author_id, thread_id, thread_type, **kwargs):
         # Do something with message_object here
         print('onMessage received custom client')
-        msg = LocalMessage(ciphertext=message_object.text, sender=message.author, recipient='self')
+        print(message_object)
+        msg = LocalMessage(ciphertext=message_object.text.encode(), sender=message_object.author, recipient='self')
         self.onReceive(msg)
+
+# Qthreaded listender class to receive messages
+class MessageListener(QThread):
+
+    def __init__(self, client=None):
+        QThread.__init__(self)
+        self.client = client
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        self.client.listen()
+
 
 # main chat client for this
 class FBChatClient:
@@ -27,8 +44,14 @@ class FBChatClient:
         print('starting fbchat client')
         self.msgReceivedCallback = msgReceivedCallback
         self.client = CustomClient(email, password)
+        self.client.setMessageCallback(self.onReceive)
+
         # required for events
-        #self.client.listen()
+        #messageListener = threading.Thread(target=self.client.listen(), args=())
+        #messageListener.daemon = True
+        #messageListener.start()
+        self.listener = MessageListener(client=self.client)
+        self.listener.start()
 
         if cipherType == 'fernet':
             self.cipherClient = FernetCrypt(password=cipherPass)
@@ -47,9 +70,6 @@ class FBChatClient:
         print('starting fb login')
         if not self.client.isLoggedIn:
             self.client.login(email, password)
-
-    # starts the fbchat client listener 
-    def listen(self):
 
 
     def sendMessage(self, txt):
