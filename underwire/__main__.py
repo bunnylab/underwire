@@ -15,27 +15,8 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None, config=storedConfiguration()):
         super(MainWindow, self).__init__(parent)
         self.platform = None
+        self.credentials = None
         self.initUI()
-
-    def loginButtonClicked(self, platform):
-        print('you clicked the login button')
-        self.platform = platform
-        self.initCryptoWidget()
-
-        '''
-        if platform == 'facebook':
-            self.initChatWidget(platform=platform,
-                email=self.loginwidget.emailEdit.text(),
-                password=self.loginwidget.passwordEdit.text())
-        elif platform == 'discord':
-            self.initChatWidget(platform=platform)
-        else:
-            self.statusBar().showMessage('Login Failed')
-            '''
-
-    def useCryptoButtonClicked(self, crypto):
-        print('you clicked the select crypto button')
-        print(crypto)
 
 
     def initUI(self):
@@ -62,6 +43,38 @@ class MainWindow(QMainWindow):
         self.setGeometry(600, 600, 500, 300)
         self.setWindowTitle('Underwire')
         self.show()
+
+
+    def loginButtonClicked(self, platform):
+        print('you clicked the login button')
+        self.platform = platform
+        if platform == 'facebook':
+            self.credentials = {'email':self.loginwidget.emailEdit.text(),
+                'password':self.loginwidget.passwordEdit.text()}
+        elif platform == 'discord':
+            self.credentials = {'token':self.loginwidget.discordTokenEdit.text()}
+        self.initCryptoWidget()
+
+
+    def useCryptoButtonClicked(self, crypto):
+        print('you clicked the select crypto button')
+        print(crypto)
+        if crypto == 'Fernet Cipher with Pass':
+            cipherType = 'fernet'
+            cipherPass = self.cryptowidget.passwordEdit.text()
+            print(cipherPass)
+
+
+        if self.platform == 'facebook':
+            self.initChatWidget(platform=self.platform,
+                email=self.credentials['email'],
+                password=self.credentials['password'],
+                cipherType=cipherType,
+                cipherPass=cipherPass)
+        elif self.platform == 'discord':
+            self.initChatWidget(platform=self.platform)  # finish implementing
+        else:
+            self.statusBar().showMessage('Login Failed')
 
     def initPlatformSelectWidget(self):
         self.platformselectwidget = PlatformSelectWidget(self)
