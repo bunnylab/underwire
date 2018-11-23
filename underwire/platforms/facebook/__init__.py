@@ -1,4 +1,5 @@
 from fbchat import Client, Message
+from fbchat.utils import USER_AGENTS
 from ciphers.fernet import FernetCrypt
 from PyQt5.QtCore import QThread
 from fbchat.models import *
@@ -43,13 +44,9 @@ class FBChatClient:
     def __init__(self, msgReceivedCallback, cipherType, cipherPass, email, password):
         print('starting fbchat client')
         self.msgReceivedCallback = msgReceivedCallback
-        self.client = CustomClient(email, password)
+        self.client = CustomClient(email, password, max_tries=2, logging_level=10, user_agent=USER_AGENTS[0])
         self.client.setMessageCallback(self.onReceive)
 
-        # required for events
-        #messageListener = threading.Thread(target=self.client.listen(), args=())
-        #messageListener.daemon = True
-        #messageListener.start()
         self.listener = MessageListener(client=self.client)
         self.listener.start()
 

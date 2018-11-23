@@ -18,6 +18,9 @@ class LoginWidget(QWidget):
 
             self.emailEdit = QLineEdit()
             self.passwordEdit = QLineEdit()
+            # stylesheets for fields
+            self.emailEdit.setStyleSheet("color: black;")
+            self.passwordEdit.setStyleSheet("color: black;")
 
             self.connectButton = QPushButton('Connect', self)
 
