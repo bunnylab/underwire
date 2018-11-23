@@ -21,7 +21,9 @@ class CustomClient(Client):
         # Do something with message_object here
         print('onMessage received custom client')
         print(message_object)
-        msg = LocalMessage(ciphertext=message_object.text.encode(), sender=message_object.author, recipient='self')
+        msg = LocalMessage(ciphertext=message_object.text.encode(),
+            sender=self.fetchUserInfo(message_object.author)[message_object.author],  # change this soon
+            recipient='self')
         self.onReceive(msg)
 
 # Qthreaded listender class to receive messages
