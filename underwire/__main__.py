@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 
 from gui.chat_widget import ChatWidget
 from gui.login_widget import LoginWidget
+from gui.crypto_widget import CryptoWidget
 from gui.platformselect_widget import PlatformSelectWidget
 from platforms.facebook import FBChatClient
 from config import storedConfiguration
@@ -13,10 +14,15 @@ class MainWindow(QMainWindow):
 
     def __init__(self, parent=None, config=storedConfiguration()):
         super(MainWindow, self).__init__(parent)
+        self.platform = None
         self.initUI()
 
     def loginButtonClicked(self, platform):
         print('you clicked the login button')
+        self.platform = platform
+        self.initCryptoWidget()
+
+        '''
         if platform == 'facebook':
             self.initChatWidget(platform=platform,
                 email=self.loginwidget.emailEdit.text(),
@@ -25,6 +31,11 @@ class MainWindow(QMainWindow):
             self.initChatWidget(platform=platform)
         else:
             self.statusBar().showMessage('Login Failed')
+            '''
+
+    def useCryptoButtonClicked(self, crypto):
+        print('you clicked the select crypto button')
+        print(crypto)
 
 
     def initUI(self):
@@ -63,6 +74,11 @@ class MainWindow(QMainWindow):
         self.loginwidget = LoginWidget(self, **kwargs)
         self.setCentralWidget(self.loginwidget)
         self.loginwidget.connectButton.clicked.connect(lambda: self.loginButtonClicked(platform=self.loginwidget.platform))
+
+    def initCryptoWidget(self, **kwargs):
+        self.cryptowidget = CryptoWidget(self, **kwargs)
+        self.setCentralWidget(self.cryptowidget)
+        self.cryptowidget.useCryptoButton.clicked.connect(lambda: self.useCryptoButtonClicked(crypto=self.cryptowidget.etypeCombo.currentText()))
 
     def initChatWidget(self, **kwargs):
         self.chatwidget = ChatWidget(self, **kwargs)
