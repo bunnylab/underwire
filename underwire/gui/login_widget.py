@@ -15,12 +15,15 @@ class LoginWidget(QWidget):
         if self.platform == 'facebook':
             self.emailLabel = QLabel('Email')
             self.passwordLabel = QLabel('Password')
+            self.targetLabel = QLabel('Target FB-ID:')
 
             self.emailEdit = QLineEdit()
             self.passwordEdit = QLineEdit()
+            self.targetEdit = QLineEdit()
             # stylesheets for fields
             self.emailEdit.setStyleSheet("color: black;")
             self.passwordEdit.setStyleSheet("color: black;")
+            self.targetEdit.setStyleSheet("color: black;")
 
             self.connectButton = QPushButton('Connect', self)
 
@@ -28,7 +31,9 @@ class LoginWidget(QWidget):
             layout.addWidget(self.emailEdit, 1, 1)
             layout.addWidget(self.passwordLabel, 2, 0)
             layout.addWidget(self.passwordEdit, 2, 1)
-            layout.addWidget(self.connectButton, 4, 2)
+            layout.addWidget(self.targetLabel, 3, 0)
+            layout.addWidget(self.targetEdit, 3, 1)
+            layout.addWidget(self.connectButton, 5, 2)
 
             self.setLayout(layout)
 

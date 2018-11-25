@@ -16,6 +16,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.platform = None
         self.credentials = None
+        self.target = None
         self.initUI()
 
 
@@ -51,8 +52,10 @@ class MainWindow(QMainWindow):
         if platform == 'facebook':
             self.credentials = {'email':self.loginwidget.emailEdit.text(),
                 'password':self.loginwidget.passwordEdit.text()}
+            self.target = {'facebook_id':self.loginwidget.targetEdit.text()}
         elif platform == 'discord':
             self.credentials = {'token':self.loginwidget.discordTokenEdit.text()}
+            self.target = {'discord_id':self.loginwidget.targetEdit.text()}
         self.initCryptoWidget()
 
 
@@ -69,6 +72,7 @@ class MainWindow(QMainWindow):
             self.initChatWidget(platform=self.platform,
                 email=self.credentials['email'],
                 password=self.credentials['password'],
+                target=self.target['facebook_id'],
                 cipherType=cipherType,
                 cipherPass=cipherPass)
         elif self.platform == 'discord':

@@ -6,7 +6,7 @@ from platforms.facebook import FBChatClient, Message
 # shift to messaging menu should have
 class ChatWidget(QWidget):
 
-    def __init__(self, parent=None, platform=None, email=None, password=None, cipherType=None, cipherPass=None):
+    def __init__(self, parent=None, platform=None, email=None, password=None, target=None, cipherType=None, cipherPass=None):
         super(ChatWidget, self).__init__(parent)
         self.platform = platform
         self.chatclient = None
@@ -22,7 +22,7 @@ class ChatWidget(QWidget):
             self.setStatusTip('Logging in to facebook with email {}...'.format(email))
             self.chatclient = FBChatClient(msgReceivedCallback=self.messageReceived,
                 cipherType=cipherType, cipherPass=cipherPass,
-                email=email, password=password)
+                email=email, password=password, target=target)
 
         elif platform == 'discord':
             print('setting discord chat client')

@@ -43,7 +43,7 @@ class MessageListener(QThread):
 # main chat client for this
 class FBChatClient:
 
-    def __init__(self, msgReceivedCallback, cipherType, cipherPass, email, password):
+    def __init__(self, msgReceivedCallback, cipherType, cipherPass, email, password, target):
         print('starting fbchat client')
         self.msgReceivedCallback = msgReceivedCallback
         self.client = CustomClient(email, password, max_tries=2, logging_level=10, user_agent=USER_AGENTS[0])
@@ -51,6 +51,11 @@ class FBChatClient:
 
         self.listener = MessageListener(client=self.client)
         self.listener.start()
+
+        if target == '':
+            self.target_thread = self.client.uid
+        else:
+            self.target_thread = int(target)
 
         if cipherType == 'fernet':
             self.cipherClient = FernetCrypt(password=cipherPass)
@@ -75,7 +80,7 @@ class FBChatClient:
         if self.loggedIn:
             ciphertext = self.cipherClient.encrypt(txt)
             print('ciphertext: ', ciphertext)
-            message_id = self.client.send(Message(text=ciphertext), thread_id=self.client.uid, thread_type=ThreadType.USER)
+            message_id = self.client.send(Message(text=ciphertext), thread_id=self.target_thread, thread_type=ThreadType.USER)
 
     def onReceive(self, msg):
         print('received a message')
