@@ -77,6 +77,10 @@ class MainWindow(QMainWindow):
                 cipherPass=cipherPass)
         elif self.platform == 'discord':
             self.initChatWidget(platform=self.platform)  # finish implementing
+        elif self.platform == 'echo':
+            self.initChatWidget(platform=self.platform,
+                cipherType=cipherType,
+                cipherPass=cipherPass)
         else:
             self.statusBar().showMessage('Login Failed')
 
@@ -84,7 +88,7 @@ class MainWindow(QMainWindow):
         self.platformselectwidget = PlatformSelectWidget(self)
         self.setCentralWidget(self.platformselectwidget)
         self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget(platform='facebook')) # change to login widget
-        self.platformselectwidget.echoButton.clicked.connect(lambda: self.initChatWidget(platform='echo'))
+        self.platformselectwidget.echoButton.clicked.connect(lambda: self.initCryptoWidget(platform='echo')) # straight to crypto
         self.platformselectwidget.discordButton.clicked.connect(lambda: self.initLoginWidget(platform='discord'))
 
     def initLoginWidget(self, **kwargs):
