@@ -5,7 +5,7 @@ from requests import HTTPError
 from datetime import datetime, timezone
 
 USER_AGENT_STRING = "underwire v0.0: experimental encrypted messaging over whatever app"
-POLLING_INTERVAL = 1.0
+POLLING_INTERVAL = 1
 
 # TODO:
 # 1) load the github token from elsewhere
@@ -70,17 +70,15 @@ class GistCommentChatClient:
 
     def gistListener(self):
         '''
-        Threaded function to listen for new messages from any of our
-        target people.
+        Threaded function to listen for new messages.
         '''
-        previous_timestamp = datetime.min.replace(tzinfo=timezone.utc)
 
         while 1:
             try:
                 response = requests.get(
                     headers={"Authorization":"token {}".format(self.oauth_token),
                              "User-Agent": USER_AGENT_STRING},
-                    url="https://api.github.com/gists/{}/comments".format(self.gist_id)
+                    url="https://api.github.com/gists/{}/comments?per_page=100".format(self.gist_id)
                     )
                 response.raise_for_status()
             except HTTPError as http_err:
@@ -96,6 +94,8 @@ class GistCommentChatClient:
                     decrypted = self.cipherClient.decrypt(encoded)
                     print('decrypted: ', decrypted)
                 except Exception as e:
+                    print('decryption failed')
+                    print(e)
                     decrypted = 'decryption failed'
 
                 msg = Message(None,None,None)
@@ -103,7 +103,6 @@ class GistCommentChatClient:
                 msg.sender = user
                 self.msgReceivedCallback(msg)
 
-            previous_timestamp = datetime.now(timezone.utc)
             time.sleep(POLLING_INTERVAL)
 
     def sendMessage(self, txt):
@@ -111,21 +110,19 @@ class GistCommentChatClient:
             ciphertext = self.cipherClient.encrypt(txt)
             encoded_ciphertext = ciphertext.decode("utf-8")
 
-            requests.post(
-                json={"body":encoded_ciphertext},
-                headers={"Authorization":"token {}".format(self.oauth_token),
-                         "User-Agent": USER_AGENT_STRING},
-                url="https://api.github.com/gists/{}/comments".format(self.gist_id)
-                )
+            try:
+                response = requests.post(
+                    json={"body":encoded_ciphertext},
+                    headers={"Authorization":"token {}".format(self.oauth_token),
+                             "User-Agent": USER_AGENT_STRING},
+                    url="https://api.github.com/gists/{}/comments".format(self.gist_id)
+                    )
+                response.raise_for_status()
+            except HTTPError as http_err:
+                print(f'HTTP error occurred: {http_err}')
+            except Exception as err:
+                print(f'Other error occurred: {err}')
+
             return 'success'
         else:
             return None
-
-    def onReceive(self, msg):
-        print('received a message')
-        decrypted = self.cipherClient.decrypt(msg.ciphertext)
-        print('decrypted: ', decrypted)
-        msg.ciphertext = None
-        msg.text = decrypted
-        self.msgReceivedCallback(msg)
-        return 'success'
