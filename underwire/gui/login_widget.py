@@ -53,10 +53,10 @@ class LoginWidget(QWidget):
             self.newGistButton = QPushButton("New Gist", self)
             self.connectButton = QPushButton("Connect", self)
 
-            self.gistIDLabel.setStyleSheet("color: white;")
-            self.gistIDEdit.setStyleSheet("color: white;")
-            self.oauthtokenLabel.setStyleSheet("color: white;")
-            self.oauthtokenEdit.setStyleSheet("color: white;")
+            self.gistIDLabel.setStyleSheet("color: black;")
+            self.gistIDEdit.setStyleSheet("color: black;")
+            self.oauthtokenLabel.setStyleSheet("color: black;")
+            self.oauthtokenEdit.setStyleSheet("color: black;")
 
             layout.addWidget(self.gistIDLabel, 1, 0)
             layout.addWidget(self.gistIDEdit, 1, 1)

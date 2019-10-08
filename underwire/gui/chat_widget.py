@@ -54,8 +54,8 @@ class ChatWidget(QWidget):
         layout.addWidget(self.chatHistory, 1, 0)
         layout.addWidget(self.chatInput, 2, 0)
 
-        self.chatInput.setStyleSheet("color: white;")
-        self.chatHistory.setStyleSheet("color: white;")
+        self.chatInput.setStyleSheet("color: black;")
+        self.chatHistory.setStyleSheet("color: black;")
 
         self.setLayout(layout)
 
