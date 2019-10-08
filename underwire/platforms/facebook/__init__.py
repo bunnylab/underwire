@@ -1,9 +1,11 @@
 from fbchat import Client, Message
-from fbchat.utils import USER_AGENTS
+#from fbchat.utils import USER_AGENTS
 from ciphers.fernet import FernetCrypt
 from PyQt5.QtCore import QThread
 from fbchat.models import *
 import time
+
+USER_AGENTS = ['fake1', 'fake2']
 
 class LocalMessage:
     def __init__(self, ciphertext, sender, recipient):

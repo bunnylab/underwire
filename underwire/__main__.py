@@ -7,7 +7,7 @@ from gui.chat_widget import ChatWidget
 from gui.login_widget import LoginWidget
 from gui.crypto_widget import CryptoWidget
 from gui.platformselect_widget import PlatformSelectWidget
-from platforms.facebook import FBChatClient
+from platforms.gistcomments import GistCommentChatClient
 from config import storedConfiguration
 
 class MainWindow(QMainWindow):
@@ -45,17 +45,34 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Underwire')
         self.show()
 
+    def echoPlatformClicked(self):
+        '''
+        Action fired when the echo platform select button is clicked.
+        '''
+        self.platform = 'echo'
+        self.initCryptoWidget(platform='echo')
+
+    def gistPlatformClicked(self):
+        '''
+        Action fired when the gist platform select button is clicked.
+        '''
+        self.platform = 'gist'
+        self.initLoginWidget(platform=self.platform)
+        #self.initCryptoWidget()
 
     def loginButtonClicked(self, platform):
         print('you clicked the login button')
         self.platform = platform
-        if platform == 'facebook':
-            self.credentials = {'email':self.loginwidget.emailEdit.text(),
-                'password':self.loginwidget.passwordEdit.text()}
-            self.target = {'facebook_id':self.loginwidget.targetEdit.text()}
-        elif platform == 'discord':
-            self.credentials = {'token':self.loginwidget.discordTokenEdit.text()}
-            self.target = {'discord_id':self.loginwidget.targetEdit.text()}
+        if platform == 'gist':
+            self.credentials = {'gist_id':self.loginwidget.gistIDEdit.text(),
+                                'oauth_token':self.loginwidget.oauthtokenEdit.text()}
+        #if platform == 'facebook':
+        #    self.credentials = {'email':self.loginwidget.emailEdit.text(),
+        #        'password':self.loginwidget.passwordEdit.text()}
+        #    self.target = {'facebook_id':self.loginwidget.targetEdit.text()}
+        #elif platform == 'discord':
+        #    self.credentials = {'token':self.loginwidget.discordTokenEdit.text()}
+        #    self.target = {'discord_id':self.loginwidget.targetEdit.text()}
         self.initCryptoWidget()
 
 
@@ -67,29 +84,38 @@ class MainWindow(QMainWindow):
             cipherPass = self.cryptowidget.passwordEdit.text()
             print(cipherPass)
 
-
-        if self.platform == 'facebook':
+        print('checking the platform now...')
+        #if self.platform == 'facebook':
+        #    self.initChatWidget(platform=self.platform,
+        #        email=self.credentials['email'],
+        #        password=self.credentials['password'],
+        #        target=self.target['facebook_id'],
+        #        cipherType=cipherType,
+        #        cipherPass=cipherPass)
+        #elif self.platform == 'discord':
+        #    self.initChatWidget(platform=self.platform)  # finish implementing
+        if self.platform == 'echo':
             self.initChatWidget(platform=self.platform,
-                email=self.credentials['email'],
-                password=self.credentials['password'],
-                target=self.target['facebook_id'],
                 cipherType=cipherType,
-                cipherPass=cipherPass)
-        elif self.platform == 'discord':
-            self.initChatWidget(platform=self.platform)  # finish implementing
-        elif self.platform == 'echo':
+                cipherPass=cipherPass,
+                credentials=self.credentials)
+        elif self.platform == 'gist':
+            print('yup its gist')
             self.initChatWidget(platform=self.platform,
                 cipherType=cipherType,
-                cipherPass=cipherPass)
+                cipherPass=cipherPass,
+                credentials=self.credentials)
         else:
             self.statusBar().showMessage('Login Failed')
 
     def initPlatformSelectWidget(self):
         self.platformselectwidget = PlatformSelectWidget(self)
         self.setCentralWidget(self.platformselectwidget)
-        self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget(platform='facebook')) # change to login widget
-        self.platformselectwidget.echoButton.clicked.connect(lambda: self.initCryptoWidget(platform='echo')) # straight to crypto
-        self.platformselectwidget.discordButton.clicked.connect(lambda: self.initLoginWidget(platform='discord'))
+        #self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget(platform='facebook')) # change to login widget
+        #self.platformselectwidget.echoButton.clicked.connect(lambda: self.initCryptoWidget(platform='echo')) # straight to crypto
+        self.platformselectwidget.echoButton.clicked.connect(lambda: self.echoPlatformClicked()) # straight to crypto
+        self.platformselectwidget.gistButton.clicked.connect(lambda: self.gistPlatformClicked())
+        #self.platformselectwidget.discordButton.clicked.connect(lambda: self.initLoginWidget(platform='discord'))
 
     def initLoginWidget(self, **kwargs):
         self.loginwidget = LoginWidget(self, **kwargs)

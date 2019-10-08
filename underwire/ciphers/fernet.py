@@ -9,7 +9,8 @@ class FernetCrypt:
     # doing fernet with a password derived key
     def __init__(self, password):
         password = password.encode('utf-8')
-        salt = os.urandom(16)
+        #salt = os.urandom(16)
+        salt = b'aaaa'  # seems the salt changes the outcome of the hash
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,

@@ -4,7 +4,7 @@ from PyQt5.QtCore import QSize, QRect
 
 class CryptoWidget(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, platform=None):
         super(CryptoWidget, self).__init__(parent)
         self.initUI()
 
