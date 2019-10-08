@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QTextEdit
 from PyQt5 import QtGui
 from platforms.echo import EchoChatClient, Message
-from platforms.facebook import FBChatClient, Message
 from platforms.gistcomments import GistCommentChatClient, Message
 
 # # TODO:
