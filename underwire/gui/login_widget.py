@@ -7,8 +7,6 @@ from requests import HTTPError
 # TODO:
 # add some method of initializing with the github token so we aren't hardcoding
 # it in like chumps, high priority... somehow save it option too?
-#
-# 5acca9ceb313ab4c5646082deacebeff81770b45
 
 class LoginWidget(QWidget):
 
