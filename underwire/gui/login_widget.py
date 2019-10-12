@@ -34,10 +34,10 @@ class LoginWidget(QWidget):
             response.raise_for_status()
         except HTTPError as http_err:
             self.gistIDEdit.setText('HTTP Error generating new gist')
-            print(f'HTTP error occurred: {http_err}')
+            print("HTTP error occurred: {}".format(http_err))
         except Exception as err:
             self.gistIDEdit.setText('Other Error generating new gist')
-            print(f'Other error occurred: {err}')
+            print("Other error occurred: {}".format(err))
 
         self.gistIDEdit.setText(response.json().get('id', ''))
 

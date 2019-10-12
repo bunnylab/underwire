@@ -82,9 +82,9 @@ class GistCommentChatClient:
                     )
                 response.raise_for_status()
             except HTTPError as http_err:
-                print(f'HTTP error occurred: {http_err}')
+                print("HTTP error occurred: {}".format(http_err))
             except Exception as err:
-                print(f'Other error occurred: {err}')
+                print("Other error occurred: {}".format(err))
 
             possible_messages = self.commentParser(response.json())
             for user, ciphertext in possible_messages:
@@ -119,9 +119,9 @@ class GistCommentChatClient:
                     )
                 response.raise_for_status()
             except HTTPError as http_err:
-                print(f'HTTP error occurred: {http_err}')
+                print("HTTP error occurred: {}".format(http_err))
             except Exception as err:
-                print(f'Other error occurred: {err}')
+                print("Other error occurred: {}".format(err))
 
             return 'success'
         else:
