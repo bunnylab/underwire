@@ -1,14 +1,26 @@
 from ciphers.fernet import FernetCrypt
 from dateutil.parser import parse
-import requests, threading, time
+import requests, threading, time, re
 from requests import HTTPError
 from datetime import datetime, timezone
 
 USER_AGENT_STRING = "underwire v0.0: experimental encrypted messaging over whatever app"
 POLLING_INTERVAL = 1
+MESSAGE_BLOCK = 10
 
 # TODO:
 # 1) load the github token from elsewhere
+
+def isLastPage(link_header):
+    '''
+    Utility function to determine if the currently requested page
+    is the final available one based on the returned link header. Returns
+    boolean.
+    '''
+    match = re.search('<https://api.github.com/gists/.+?&page=(\d+)>; rel="next"', link_header)
+    if match:
+        return False
+    return True
 
 class Message:
     def __init__(self, ciphertext, sender, recipient):
@@ -72,19 +84,30 @@ class GistCommentChatClient:
         '''
         Threaded function to listen for new messages.
         '''
-
+        current_page = 0
         while 1:
             try:
-                response = requests.get(
-                    headers={"Authorization":"token {}".format(self.oauth_token),
-                             "User-Agent": USER_AGENT_STRING},
-                    url="https://api.github.com/gists/{}/comments?per_page=100".format(self.gist_id)
-                    )
+                if not current_page:
+                    response = requests.get(
+                        headers={"Authorization":"token {}".format(self.oauth_token),
+                                 "User-Agent": USER_AGENT_STRING},
+                        url="https://api.github.com/gists/{}/comments?per_page={}".format(self.gist_id, MESSAGE_BLOCK)
+                        )
+                else:
+                    response = requests.get(
+                        headers={"Authorization":"token {}".format(self.oauth_token),
+                                 "User-Agent": USER_AGENT_STRING},
+                        url="https://api.github.com/gists/{}/comments?per_page={}&page={}".format(self.gist_id, MESSAGE_BLOCK, current_page)
+                        )
                 response.raise_for_status()
             except HTTPError as http_err:
                 print("HTTP error occurred: {}".format(http_err))
             except Exception as err:
                 print("Other error occurred: {}".format(err))
+
+            # increment pagination if there are still more comments to read
+            if ('Link' in response.headers) and not isLastPage(response.headers['Link']):
+                current_page += 1
 
             possible_messages = self.commentParser(response.json())
             for user, ciphertext in possible_messages:
