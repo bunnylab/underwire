@@ -17,8 +17,12 @@ class MainWindow(QMainWindow):
         self.platform = None
         self.credentials = None
         self.target = None
-        self.initUI()
+        self.config = config
 
+        # retrieve any stored credentials
+        self.config.retrieve_credentials()
+
+        self.initUI()
 
     def initUI(self):
         self.central_widget = QStackedWidget()
@@ -58,49 +62,40 @@ class MainWindow(QMainWindow):
         '''
         self.platform = 'gist'
         self.initLoginWidget(platform=self.platform)
-        #self.initCryptoWidget()
+
+        if self.config.credentials:
+            self.loginwidget.gistIDEdit.setText( self.config.credentials['gist'].get('gist_id') )
+            self.loginwidget.oauthtokenEdit.setText( self.config.credentials['gist'].get('oauth_token') )
 
     def loginButtonClicked(self, platform):
-        print('you clicked the login button')
+        '''
+        Action fired when the login button for a platform is clicked.
+        '''
         self.platform = platform
         if platform == 'gist':
             self.credentials = {'gist_id':self.loginwidget.gistIDEdit.text(),
                                 'oauth_token':self.loginwidget.oauthtokenEdit.text()}
-        #if platform == 'facebook':
-        #    self.credentials = {'email':self.loginwidget.emailEdit.text(),
-        #        'password':self.loginwidget.passwordEdit.text()}
-        #    self.target = {'facebook_id':self.loginwidget.targetEdit.text()}
-        #elif platform == 'discord':
-        #    self.credentials = {'token':self.loginwidget.discordTokenEdit.text()}
-        #    self.target = {'discord_id':self.loginwidget.targetEdit.text()}
+
+            # add our credentials to the config file
+            self.config.update_credentials(self.credentials, platform=self.platform)
+            self.config.persist_credentials()
+
         self.initCryptoWidget()
 
-
     def useCryptoButtonClicked(self, crypto):
-        print('you clicked the select crypto button')
-        print(crypto)
+        '''
+        Action fired when the crypto select button is clicked.
+        '''
         if crypto == 'Fernet Cipher with Pass':
             cipherType = 'fernet'
             cipherPass = self.cryptowidget.passwordEdit.text()
-            print(cipherPass)
 
-        print('checking the platform now...')
-        #if self.platform == 'facebook':
-        #    self.initChatWidget(platform=self.platform,
-        #        email=self.credentials['email'],
-        #        password=self.credentials['password'],
-        #        target=self.target['facebook_id'],
-        #        cipherType=cipherType,
-        #        cipherPass=cipherPass)
-        #elif self.platform == 'discord':
-        #    self.initChatWidget(platform=self.platform)  # finish implementing
         if self.platform == 'echo':
             self.initChatWidget(platform=self.platform,
                 cipherType=cipherType,
                 cipherPass=cipherPass,
                 credentials=self.credentials)
         elif self.platform == 'gist':
-            print('yup its gist')
             self.initChatWidget(platform=self.platform,
                 cipherType=cipherType,
                 cipherPass=cipherPass,
