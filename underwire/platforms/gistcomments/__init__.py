@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 USER_AGENT_STRING = "underwire v0.0: experimental encrypted messaging over whatever app"
 POLLING_INTERVAL = 1
-MESSAGE_BLOCK = 10
+MESSAGE_BLOCK = 20
 
 # TODO:
 # 1) load the github token from elsewhere

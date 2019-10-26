@@ -10,6 +10,8 @@ from gui.platformselect_widget import PlatformSelectWidget
 from platforms.gistcomments import GistCommentChatClient
 from config import storedConfiguration
 
+WINDOW_GEOMETRY = (800,800,600,400)
+
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None, config=storedConfiguration()):
@@ -33,11 +35,20 @@ class MainWindow(QMainWindow):
         exitAct.setShortcut('Ctrl+Q')
         exitAct.setStatusTip('Exit application')
         exitAct.triggered.connect(app.quit)
+
+        # invert colors action
+        darkModeAct = QAction('&Dark Mode', self)
+        darkModeAct.setStatusTip('Change the colors >:(')
+        darkModeAct.triggered.connect(self.colorChange)
+
         # menubar
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)  # lets it display on mac
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(exitAct)
+        viewMenu = menubar.addMenu('&View')
+        viewMenu.addAction(darkModeAct)
+
 
         # status bar
         self.statusBar().showMessage('Ready')
@@ -45,9 +56,13 @@ class MainWindow(QMainWindow):
         # set the initial widget
         self.initPlatformSelectWidget()
 
-        self.setGeometry(600, 600, 500, 300)
+        #self.setGeometry(600, 600, 500, 300)
+        self.setGeometry(*WINDOW_GEOMETRY)
         self.setWindowTitle('Underwire')
         self.show()
+
+    def colorChange(self):
+        print('color change thing happened')
 
     def echoPlatformClicked(self):
         '''
