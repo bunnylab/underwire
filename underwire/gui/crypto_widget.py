@@ -23,6 +23,7 @@ class CryptoWidget(QWidget):
 
         self.passwordLabel = QLabel('Password')
         self.passwordEdit = QLineEdit()
+        self.passwordEdit.setEchoMode(QLineEdit.Password)
 
         self.useCryptoButton = QPushButton('Select', self)
 

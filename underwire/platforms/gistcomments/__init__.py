@@ -8,9 +8,6 @@ USER_AGENT_STRING = "underwire v0.0: experimental encrypted messaging over whate
 POLLING_INTERVAL = 1
 MESSAGE_BLOCK = 20
 
-# TODO:
-# 1) load the github token from elsewhere
-
 def isLastPage(link_header):
     '''
     Utility function to determine if the currently requested page

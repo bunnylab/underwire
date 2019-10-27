@@ -7,6 +7,7 @@ from gui.chat_widget import ChatWidget
 from gui.login_widget import LoginWidget
 from gui.crypto_widget import CryptoWidget
 from gui.platformselect_widget import PlatformSelectWidget
+from gui.localpass_widget import LocalPassWidget
 from platforms.gistcomments import GistCommentChatClient
 from config import storedConfiguration
 
@@ -20,9 +21,7 @@ class MainWindow(QMainWindow):
         self.credentials = None
         self.target = None
         self.config = config
-
-        # retrieve any stored credentials
-        self.config.retrieve_credentials()
+        self.configuration_password = None
 
         self.initUI()
 
@@ -54,7 +53,8 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage('Ready')
 
         # set the initial widget
-        self.initPlatformSelectWidget()
+        #self.initPlatformSelectWidget()
+        self.initLocalPassWidget()
 
         #self.setGeometry(600, 600, 500, 300)
         self.setGeometry(*WINDOW_GEOMETRY)
@@ -63,6 +63,17 @@ class MainWindow(QMainWindow):
 
     def colorChange(self):
         print('color change thing happened')
+
+    def localPassClicked(self):
+        '''
+        Action fired when the local password button is clicked.
+        '''
+        self.configuration_password = self.localpasswidget.passwordEdit.text()
+        (success, error) = self.config.retrieve_credentials(password=self.configuration_password)
+        if error:
+            self.statusBar().showMessage(error)
+
+        self.initPlatformSelectWidget()
 
     def echoPlatformClicked(self):
         '''
@@ -93,7 +104,11 @@ class MainWindow(QMainWindow):
 
             # add our credentials to the config file
             self.config.update_credentials(self.credentials, platform=self.platform)
-            self.config.persist_credentials()
+            (success, error) = self.config.persist_credentials(password=self.configuration_password)
+            # set our little alert bar to error message if exists
+            if error:
+                self.statusBar().showMessage(error)
+
 
         self.initCryptoWidget()
 
@@ -135,11 +150,18 @@ class MainWindow(QMainWindow):
     def initCryptoWidget(self, **kwargs):
         self.cryptowidget = CryptoWidget(self, **kwargs)
         self.setCentralWidget(self.cryptowidget)
+        # some of the arguments in these connections can probably just
+        # be done inside of the called functions
         self.cryptowidget.useCryptoButton.clicked.connect(lambda: self.useCryptoButtonClicked(crypto=self.cryptowidget.etypeCombo.currentText()))
 
     def initChatWidget(self, **kwargs):
         self.chatwidget = ChatWidget(self, **kwargs)
         self.setCentralWidget(self.chatwidget)
+
+    def initLocalPassWidget(self, **kwargs):
+        self.localpasswidget = LocalPassWidget(self, **kwargs)
+        self.setCentralWidget(self.localpasswidget)
+        self.localpasswidget.passwordButton.clicked.connect(lambda: self.localPassClicked())
 
 if __name__ == '__main__':
 

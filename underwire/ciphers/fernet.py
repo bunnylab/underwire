@@ -25,10 +25,10 @@ class FernetCrypt:
         if self.fernet:
             return self.fernet.encrypt(plaintext.encode('utf-8'))
         else:
-            return 'error'
+            return None
 
     def decrypt(self, cipherTxt):
         if self.fernet:
             return self.fernet.decrypt(cipherTxt).decode('utf-8')
         else:
-            return 'error'
+            return None
