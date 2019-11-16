@@ -1,4 +1,5 @@
 from ciphers.fernet import FernetCrypt
+from ciphers.chachapoly import ChachaPolyCrypt
 from dateutil.parser import parse
 import requests, threading, time, re
 from requests import HTTPError
@@ -45,6 +46,8 @@ class GistCommentChatClient:
 
         if cipherType == 'fernet':
             self.cipherClient = FernetCrypt(password=cipherPass)
+        elif cipherType == 'chachapoly':
+            self.cipherClient = ChachaPolyCrypt(password=cipherPass)
         else:
             self.cipherClient = None
 

@@ -6,8 +6,9 @@ Creates a secret channel to support your activities.
 ## Running
 
 clone the repository
-pip install -r requirements.txt
-python underwire
+
+    pip install -r requirements.txt
+    python underwire
 
 ## Setting up Gist Chat
 
@@ -23,5 +24,5 @@ https://help.github.com/en/articles/creating-a-personal-access-token-for-the-com
 A gist id acts as the unique identifier for a 'chat room'. You may either
 create a new gist and share that id to chat or join an existing room by
 entering an existing gist id. By default gists are created as 'secret' and
-are not indexed by search engines but they are public so be careful who you 
+are not indexed by search engines but they are public so be careful who you
 share your gist id with.

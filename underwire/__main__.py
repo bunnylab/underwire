@@ -119,6 +119,9 @@ class MainWindow(QMainWindow):
         if crypto == 'Fernet Cipher with Pass':
             cipherType = 'fernet'
             cipherPass = self.cryptowidget.passwordEdit.text()
+        elif crypto == 'ChaCha20Poly1305 PBKDF':
+            cipherType = 'chachapoly'
+            cipherPass = self.cryptowidget.passwordEdit.text()
 
         if self.platform == 'echo':
             self.initChatWidget(platform=self.platform,

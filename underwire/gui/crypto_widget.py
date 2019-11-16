@@ -18,7 +18,7 @@ class CryptoWidget(QWidget):
         self.etypeCombo.setGeometry(QRect(40, 40, 491, 31))
         self.etypeCombo.setObjectName(("etypeCombo"))
         self.etypeCombo.addItem("Fernet Cipher with Pass")
-        self.etypeCombo.addItem("placeholder1")
+        self.etypeCombo.addItem("ChaCha20Poly1305 PBKDF")
         self.etypeCombo.addItem("placeholder2")
 
         self.passwordLabel = QLabel('Password')
@@ -35,9 +35,12 @@ class CryptoWidget(QWidget):
 
         self.setLayout(layout)
 
+    # TODO: using labels for branching logic is kind of akward change pls
     def selectionChange(self,i):
+        pbkdf_types = ['Fernet Cipher with Pass', 'ChaCha20Poly1305 PBKDF']
+
         print('changed to', self.etypeCombo.currentText())
-        if self.etypeCombo.currentText() == 'Fernet Cipher with Pass':
+        if self.etypeCombo.currentText() in pbkdf_types:
             self.passwordLabel.setVisible(True)
             self.passwordEdit.setVisible(True)
         else:
