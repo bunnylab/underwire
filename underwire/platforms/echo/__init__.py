@@ -1,5 +1,4 @@
-from ciphers.fernet import FernetCrypt
-from ciphers.chachapoly import ChachaPolyCrypt
+from ciphers.salsapoly import SalsaPolyCrypt
 
 class Message:
     def __init__(self, ciphertext, sender, recipient):
@@ -10,15 +9,12 @@ class Message:
 class EchoChatClient:
 
     def __init__(self, msgReceivedCallback, cipherType, cipherPass):
-        print('starting echo chat client')
-        print(cipherType, cipherPass)
+
         self.loggedIn = True
         self.msgReceivedCallback = msgReceivedCallback
 
-        if cipherType == 'fernet':
-            self.cipherClient = FernetCrypt(password=cipherPass)
-        elif cipherType == 'chachapoly':
-            self.cipherClient = ChachaPolyCrypt(password=cipherPass)
+        if cipherType == 'salsapoly':
+            self.cipherClient = SalsaPolyCrypt(password=cipherPass)
         else:
             self.cipherClient = None
 

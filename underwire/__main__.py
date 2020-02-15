@@ -48,15 +48,12 @@ class MainWindow(QMainWindow):
         viewMenu = menubar.addMenu('&View')
         viewMenu.addAction(darkModeAct)
 
-
         # status bar
         self.statusBar().showMessage('Ready')
 
         # set the initial widget
-        #self.initPlatformSelectWidget()
         self.initLocalPassWidget()
 
-        #self.setGeometry(600, 600, 500, 300)
         self.setGeometry(*WINDOW_GEOMETRY)
         self.setWindowTitle('Underwire')
         self.show()
@@ -116,11 +113,9 @@ class MainWindow(QMainWindow):
         '''
         Action fired when the crypto select button is clicked.
         '''
-        if crypto == 'Fernet Cipher with Pass':
-            cipherType = 'fernet'
-            cipherPass = self.cryptowidget.passwordEdit.text()
-        elif crypto == 'ChaCha20Poly1305 PBKDF':
-            cipherType = 'chachapoly'
+
+        if crypto == "SalsaPoly1305 Password":
+            cipherType = 'salsapoly'
             cipherPass = self.cryptowidget.passwordEdit.text()
 
         if self.platform == 'echo':
@@ -139,11 +134,9 @@ class MainWindow(QMainWindow):
     def initPlatformSelectWidget(self):
         self.platformselectwidget = PlatformSelectWidget(self)
         self.setCentralWidget(self.platformselectwidget)
-        #self.platformselectwidget.fbButton.clicked.connect(lambda: self.initLoginWidget(platform='facebook')) # change to login widget
-        #self.platformselectwidget.echoButton.clicked.connect(lambda: self.initCryptoWidget(platform='echo')) # straight to crypto
+
         self.platformselectwidget.echoButton.clicked.connect(lambda: self.echoPlatformClicked()) # straight to crypto
         self.platformselectwidget.gistButton.clicked.connect(lambda: self.gistPlatformClicked())
-        #self.platformselectwidget.discordButton.clicked.connect(lambda: self.initLoginWidget(platform='discord'))
 
     def initLoginWidget(self, **kwargs):
         self.loginwidget = LoginWidget(self, **kwargs)

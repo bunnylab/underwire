@@ -1,9 +1,8 @@
-from ciphers.fernet import FernetCrypt
-from ciphers.chachapoly import ChachaPolyCrypt
 from dateutil.parser import parse
 import requests, threading, time, re
 from requests import HTTPError
 from datetime import datetime, timezone
+from ciphers.salsapoly import SalsaPolyCrypt
 
 USER_AGENT_STRING = "underwire v0.0: experimental encrypted messaging over whatever app"
 POLLING_INTERVAL = 1
@@ -29,27 +28,27 @@ class Message:
 class GistCommentChatClient:
 
     def __init__(self, msgReceivedCallback=None, cipherType=None, cipherPass=None, oauth_token=None, gist_id=None):
-        print('starting gist chat client')
-        print(cipherType, cipherPass)
+
         self.msgReceivedCallback = msgReceivedCallback
         self.gist_id = gist_id
         self.oauth_token = oauth_token
         self.comment_ids = []
+
+        # initialize cipher before we start the listener
+        if cipherType == 'salsapoly':
+            self.cipherClient = SalsaPolyCrypt(password=cipherPass)
+        else:
+            self.cipherClient = None
+
         if self.verifyOauth(oauth_token):
             self.loggedIn = True
             self.oauth_token = oauth_token
-        # starting the listener thread
 
+        # starting the listener thread
         # verify the room actually exists before we get here too
         self.listener = threading.Thread(target=self.gistListener, daemon=True)
         self.listener.start()
 
-        if cipherType == 'fernet':
-            self.cipherClient = FernetCrypt(password=cipherPass)
-        elif cipherType == 'chachapoly':
-            self.cipherClient = ChachaPolyCrypt(password=cipherPass)
-        else:
-            self.cipherClient = None
 
     def __del__(self):
         print('deleting the gist client class')
@@ -59,6 +58,7 @@ class GistCommentChatClient:
         '''
         Check that our oauth_token actually works
         '''
+        # TODO: actually do this lol
         return True
 
     def commentParser(self, data):

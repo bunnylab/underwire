@@ -1,5 +1,5 @@
-import json, cryptography
-from ciphers.fernet import FernetCrypt
+import json, nacl
+from ciphers.salsapoly import SalsaPolyCrypt
 print('initializing the configuration...')
 
 CREDENTIALS_FILE = 'underwire/config/storedcreds.txt'
@@ -26,9 +26,8 @@ class storedConfiguration():
         Returns a tuple (success_boolean, error_string)
         '''
         if password:
-            cipher = FernetCrypt(password=password)
-            encrypted_credentials = cipher.encrypt(json.dumps(self.credentials))
-            credentials = encrypted_credentials.decode("utf-8")
+            cipher = SalsaPolyCrypt(password=password)
+            credentials = cipher.encrypt(json.dumps(self.credentials))
         else:
             credentials = json.dumps(self.credentials)
 
@@ -58,10 +57,9 @@ class storedConfiguration():
 
         if password:
             try:
-                cipher = FernetCrypt(password=password)
-                encoded_credentials = file_contents.encode("utf-8")
-                credentials = cipher.decrypt(encoded_credentials)
-            except cryptography.fernet.InvalidToken:
+                cipher = SalsaPolyCrypt(password=password)
+                credentials = cipher.decrypt(file_contents)
+            except nacl.exceptions.CryptoError:
                 return (False, 'Config decryption failed. Password invalid or config file modified.')
         else:
             credentials = file_contents

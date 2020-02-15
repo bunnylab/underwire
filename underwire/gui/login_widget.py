@@ -5,8 +5,6 @@ from requests import HTTPError
 
 # widget for logging into stuff with token
 # TODO:
-# add some method of initializing with the github token so we aren't hardcoding
-# it in like chumps, high priority... somehow save it option too?
 
 class LoginWidget(QWidget):
 
@@ -33,10 +31,10 @@ class LoginWidget(QWidget):
                 )
             response.raise_for_status()
         except HTTPError as http_err:
-            self.gistIDEdit.setText('HTTP Error generating new gist')
+            self.setStatusTip('HTTP Error generating new gist')
             print("HTTP error occurred: {}".format(http_err))
         except Exception as err:
-            self.gistIDEdit.setText('Other Error generating new gist')
+            self.setStatusTip('Other Error generating new gist')
             print("Other error occurred: {}".format(err))
 
         self.gistIDEdit.setText(response.json().get('id', ''))
@@ -53,11 +51,6 @@ class LoginWidget(QWidget):
             self.newGistButton = QPushButton("New Gist", self)
             self.connectButton = QPushButton("Connect", self)
 
-            self.gistIDLabel.setStyleSheet("color: black;")
-            self.gistIDEdit.setStyleSheet("color: black;")
-            self.oauthtokenLabel.setStyleSheet("color: black;")
-            self.oauthtokenEdit.setStyleSheet("color: black;")
-
             layout.addWidget(self.gistIDLabel, 1, 0)
             layout.addWidget(self.gistIDEdit, 1, 1)
             layout.addWidget(self.oauthtokenLabel, 2, 0)
@@ -68,49 +61,3 @@ class LoginWidget(QWidget):
             self.newGistButton.clicked.connect(lambda: self.newGistClicked() )
 
         self.setLayout(layout)
-
-        #if self.platform == 'facebook':
-        #    self.emailLabel = QLabel('Email')
-        #    self.passwordLabel = QLabel('Password')
-        #    self.targetLabel = QLabel('Target FB-ID:')
-
-        #    self.emailEdit = QLineEdit()
-        #    self.passwordEdit = QLineEdit()
-        #    self.targetEdit = QLineEdit()
-            # stylesheets for fields
-        #    self.emailEdit.setStyleSheet("color: black;")
-        #    self.passwordEdit.setStyleSheet("color: black;")
-        #    self.targetEdit.setStyleSheet("color: black;")
-
-        #    self.connectButton = QPushButton('Connect', self)
-
-        #    layout.addWidget(self.emailLabel, 1, 0)
-        #    layout.addWidget(self.emailEdit, 1, 1)
-        #    layout.addWidget(self.passwordLabel, 2, 0)
-        #    layout.addWidget(self.passwordEdit, 2, 1)
-        #    layout.addWidget(self.targetLabel, 3, 0)
-        #    layout.addWidget(self.targetEdit, 3, 1)
-        #    layout.addWidget(self.connectButton, 5, 2)
-
-        #    self.setLayout(layout)
-
-        #elif self.platform == 'discord':
-        #    self.handleSelfLabel = QLabel('Your Handle')
-        #    self.handleTargetLabel = QLabel('Target Handle')
-        #    self.discordTokenLabel = QLabel('Discord Token')
-
-        #    self.handleSelfEdit = QLineEdit()
-        #    self.handleTargetEdit = QLineEdit()
-        #    self.discordTokenEdit = QLineEdit()
-
-        #    self.connectButton = QPushButton('Connect', self)
-
-        #    layout.addWidget(self.handleSelfLabel, 1, 0)
-        #    layout.addWidget(self.handleSelfEdit, 1, 1)
-        #    layout.addWidget(self.handleTargetLabel, 2, 0)
-        #    layout.addWidget(self.handleTargetEdit, 2, 1)
-        #    layout.addWidget(self.discordTokenLabel, 3, 0)
-        #    layout.addWidget(self.discordTokenEdit, 3, 1)
-        #    layout.addWidget(self.connectButton, 5, 2)
-
-        #    self.setLayout(layout)

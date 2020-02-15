@@ -12,6 +12,7 @@ from platforms.gistcomments import GistCommentChatClient, Message
 class ChatWidget(QWidget):
 
     def __init__(self, parent=None, platform=None, email=None, password=None, target=None, cipherType=None, cipherPass=None, credentials=None):
+
         super(ChatWidget, self).__init__(parent)
         self.platform = platform
         self.chatclient = None
@@ -31,15 +32,6 @@ class ChatWidget(QWidget):
             self.chatclient = GistCommentChatClient(msgReceivedCallback=self.messageReceived,
                 cipherType=cipherType, cipherPass=cipherPass, oauth_token=oauth_token, gist_id=gist_id)
 
-        #elif platform == 'facebook':
-        #    self.setStatusTip('Logging in to facebook with email {}...'.format(email))
-        #    self.chatclient = FBChatClient(msgReceivedCallback=self.messageReceived,
-        #        cipherType=cipherType, cipherPass=cipherPass,
-        #        email=email, password=password, target=target)
-
-        #elif platform == 'discord':
-        #    print('setting discord chat client')
-
         self.setStatusTip(platform)
         self.initUI()
 
@@ -54,9 +46,6 @@ class ChatWidget(QWidget):
 
         layout.addWidget(self.chatHistory, 1, 0)
         layout.addWidget(self.chatInput, 2, 0)
-
-        self.chatInput.setStyleSheet("color: black;")
-        self.chatHistory.setStyleSheet("color: black;")
 
         self.setLayout(layout)
 
